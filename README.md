@@ -22,6 +22,28 @@ Beside building, the `docker.sh` script allows to spawn a shell in the container
 or run the evaluation:
 
 ```
-./docker.sh eval 
+./docker.sh eval
 ```
-# verifiable-unlearning-
+
+### Running a sample experiment
+
+After building the Docker image, you can launch a training proof on a toy
+dataset with:
+
+```bash
+./docker.sh shell
+python3 src/run.py \
+  --trial_name demo_run \
+  --technique retraining --mode train \
+  --no_samples_D_prev 0 \
+  --no_samples_D_plus 3 \
+  --no_samples_U_prev 0 \
+  --no_samples_U_plus 0 \
+  --dataset_name synthetic_2 \
+  --classifier neural_network_2 \
+  --epochs 2 \
+  --proof_system nizk
+```
+
+The generated artifacts (model accuracy, circuit files, and proof log) will be
+placed in `trials/demo_run/`.

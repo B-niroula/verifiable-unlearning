@@ -4,7 +4,7 @@ import shutil
 import time
 from pathlib import Path
 
-import pydng
+import uuid
 
 from circ import CirC
 from classifier.linear_regression import LinearRegression
@@ -139,7 +139,9 @@ def main(trials_dir, trial_name, technique, mode, dataset_config, proof_config):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--trials_dir', type=Path, default=Path('/root/verifiable-unlearning/evaluation/trials'))
-    parser.add_argument('--trial_name', type=str, default=f'unsorted/{time.strftime("%Y-%m-%d")}_{pydng.generate_name()}', help='')
+    parser.add_argument('--trial_name', type=str,
+                        default=f'unsorted/{time.strftime("%Y-%m-%d")}_{uuid.uuid4().hex}',
+                        help='')
     
     parser.add_argument('--technique', type=str, default='optimization')
     parser.add_argument('--mode', type=str, default='train')
