@@ -24,4 +24,22 @@ or run the evaluation:
 ```
 ./docker.sh eval 
 ```
-# verifiable-unlearning-
+## Running a Sample Experiment
+
+After installing the requirements (or using the Docker image), you can run a minimal example:
+
+```bash
+python3 src/run.py \
+    --trial_name mini_example \
+    --technique retraining --mode train \
+    --no_samples_D_prev 0 \
+    --no_samples_D_plus 3 \
+    --no_samples_U_prev 0 \
+    --no_samples_U_plus 0 \
+    --dataset_name synthetic_2 \
+    --classifier neural_network_2 \
+    --epochs 2 \
+    --proof_system nizk
+```
+
+The results are written to `trials/mini_example` and include the generated circuit, the serialized R1CS, and the proof log.
