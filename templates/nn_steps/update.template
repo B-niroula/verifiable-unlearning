@@ -1,0 +1,36 @@
+import "utils/casts/u64_to_bits" as u64_to_bits
+
+const u64 PRECISION = {{precision}}
+const u32 NO_FEATURES = {{no_features}}
+const u32 NO_NEURONS = {{no_neurons}}
+const u64 LR = {{lr}}
+
+{% for j in range(no_neurons) %}
+const u64[NO_FEATURES] W0_{{j}} = {{w0[j]}}
+{% endfor %}
+const u64[NO_NEURONS] B0 = {{b0}}
+const u64[NO_NEURONS] W1 = {{w1}}
+const u64 B1 = {{b1}}
+
+const u64 W0 = {{W0}}
+const u64 W1S = {{W1S}}
+const u64 W3 = {{W3}}
+
+def remove_shift(u64 input) -> u64:
+    return if u64_to_bits(input)[0] == true then -1*((-1*input)/PRECISION) else input / PRECISION fi
+
+def sigmoid(u64 x) -> u64:
+    return W0 + remove_shift(W1S*x) - remove_shift(W3*remove_shift(remove_shift(x*x)*x))
+
+def main(private u64[NO_NEURONS][NO_FEATURES] dw0, private u64[NO_NEURONS] dw1, private u64[NO_NEURONS] db0, private u64 db1) -> field:
+    {% for j in range(no_neurons) %}
+    for u32 i in 0..NO_FEATURES do
+        u64 new_w0_{{j}}_{{i}} = W0_{{j}}[i] - remove_shift(LR*dw0[{{j}}][i])
+    endfor
+    u64 new_b0_{{j}} = B0[{{j}}] - remove_shift(LR*db0[{{j}}])
+    {% endfor %}
+    {% for j in range(no_neurons) %}
+    u64 new_w1_{{j}} = W1[{{j}}] - remove_shift(LR*dw1[{{j}}])
+    {% endfor %}
+    u64 new_b1 = B1 - remove_shift(LR*db1)
+    return 0
