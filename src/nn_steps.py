@@ -1,5 +1,7 @@
 import argparse
 import json
+import os
+import shutil
 from pathlib import Path
 from jinja2 import Template
 from circ import CirC
@@ -66,6 +68,15 @@ def params_for_step(step: str, cfg):
 def compile_step(step: str, cfg):
     working_dir = cfg['working_dir'].joinpath(step)
     working_dir.mkdir(parents=True, exist_ok=True)
+    repo_root = Path(__file__).resolve().parent.parent
+    poseidon_src = repo_root.joinpath('templates', 'poseidon')
+    if poseidon_src.exists():
+        shutil.copytree(poseidon_src, working_dir.joinpath('poseidon'), dirs_exist_ok=True)
+    stdlib_src = Path(os.environ.get('CIRC_STDLIB', '/root/circ/stdlib'))
+    if stdlib_src.exists():
+        shutil.copytree(stdlib_src, working_dir.joinpath('stdlib'), dirs_exist_ok=True)
+    else:
+        raise FileNotFoundError(f"std library not found: {stdlib_src}")
     circ = CirC(cfg['circ_path'], debug=cfg['debug'])
     proof_src = render_step(step, cfg)
     working_dir.joinpath('circuit.zok').write_text(proof_src)

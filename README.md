@@ -22,8 +22,14 @@ Beside building, the `docker.sh` script allows to spawn a shell in the container
 or run the evaluation:
 
 ```
-./docker.sh eval 
+./docker.sh eval
 ```
+
+Compilation of the neural network step circuits relies on CirC's ZSharp
+standard library.  Set the environment variable `CIRC_STDLIB` to the path of
+this library when running outside of the Docker container.  The default path is
+`/root/circ/stdlib`.
+
 ## Running a Sample Experiment
 
 After installing the requirements (or using the Docker image), you can run a minimal example:
